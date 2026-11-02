@@ -1,0 +1,8 @@
+# CMake generated Testfile for 
+# Source directory: /home/moradlinux/labEkf_ws/src/turtlebot3_perception/landmark_msgs
+# Build directory: /home/moradlinux/labEkf_ws/build/landmark_msgs
+# 
+# This file includes the relevant testing commands required for 
+# testing this directory and lists subdirectories to be tested as well.
+subdirs("landmark_msgs__py")
+subdirs("landmark_msgs__rs")

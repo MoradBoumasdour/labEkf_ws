@@ -1,0 +1,41 @@
+[0.022s] Invoking command in '/home/moradlinux/labEkf_ws/build/turtlebot3_simulations': AMENT_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/turtlebot3_fake_node:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/turtlebot3_fake_node:/opt/ros/humble /usr/bin/cmake /home/moradlinux/labEkf_ws/src/turtlebot3_simulations/turtlebot3_simulations -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/moradlinux/labEkf_ws/install/turtlebot3_simulations
+[0.096s] -- The C compiler identification is GNU 11.4.0
+[0.309s] -- The CXX compiler identification is GNU 11.4.0
+[0.477s] -- Detecting C compiler ABI info
+[0.549s] -- Detecting C compiler ABI info - done
+[0.554s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.554s] -- Detecting C compile features
+[0.554s] -- Detecting C compile features - done
+[0.556s] -- Detecting CXX compiler ABI info
+[0.644s] -- Detecting CXX compiler ABI info - done
+[0.648s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.649s] -- Detecting CXX compile features
+[0.649s] -- Detecting CXX compile features - done
+[0.650s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.748s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[0.786s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.844s] -- Configuring done
+[0.846s] -- Generating done
+[0.847s] -- Build files have been written to: /home/moradlinux/labEkf_ws/build/turtlebot3_simulations
+[0.850s] Invoked command in '/home/moradlinux/labEkf_ws/build/turtlebot3_simulations' returned '0': AMENT_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/turtlebot3_fake_node:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/turtlebot3_fake_node:/opt/ros/humble /usr/bin/cmake /home/moradlinux/labEkf_ws/src/turtlebot3_simulations/turtlebot3_simulations -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/moradlinux/labEkf_ws/install/turtlebot3_simulations
+[0.851s] Invoking command in '/home/moradlinux/labEkf_ws/build/turtlebot3_simulations': AMENT_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/turtlebot3_fake_node:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/turtlebot3_fake_node:/opt/ros/humble /usr/bin/cmake --build /home/moradlinux/labEkf_ws/build/turtlebot3_simulations -- -j8 -l8
+[0.873s] Invoked command in '/home/moradlinux/labEkf_ws/build/turtlebot3_simulations' returned '0': AMENT_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/turtlebot3_fake_node:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/turtlebot3_fake_node:/opt/ros/humble /usr/bin/cmake --build /home/moradlinux/labEkf_ws/build/turtlebot3_simulations -- -j8 -l8
+[0.874s] Invoking command in '/home/moradlinux/labEkf_ws/build/turtlebot3_simulations': AMENT_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/turtlebot3_fake_node:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/turtlebot3_fake_node:/opt/ros/humble /usr/bin/cmake --install /home/moradlinux/labEkf_ws/build/turtlebot3_simulations
+[0.879s] -- Install configuration: ""
+[0.879s] -- Execute custom install script
+[0.880s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/ament_index/resource_index/package_run_dependencies/turtlebot3_simulations
+[0.887s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/ament_index/resource_index/parent_prefix_path/turtlebot3_simulations
+[0.893s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/turtlebot3_simulations/environment/ament_prefix_path.sh
+[0.898s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/turtlebot3_simulations/environment/ament_prefix_path.dsv
+[0.904s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/turtlebot3_simulations/environment/path.sh
+[0.909s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/turtlebot3_simulations/environment/path.dsv
+[0.914s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/turtlebot3_simulations/local_setup.bash
+[0.919s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/turtlebot3_simulations/local_setup.sh
+[0.925s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/turtlebot3_simulations/local_setup.zsh
+[0.929s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/turtlebot3_simulations/local_setup.dsv
+[0.935s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/turtlebot3_simulations/package.dsv
+[0.941s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/ament_index/resource_index/packages/turtlebot3_simulations
+[0.946s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/turtlebot3_simulations/cmake/turtlebot3_simulationsConfig.cmake
+[0.951s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/turtlebot3_simulations/cmake/turtlebot3_simulationsConfig-version.cmake
+[0.956s] -- Symlinking: /home/moradlinux/labEkf_ws/install/turtlebot3_simulations/share/turtlebot3_simulations/package.xml
+[0.964s] Invoked command in '/home/moradlinux/labEkf_ws/build/turtlebot3_simulations' returned '0': AMENT_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/turtlebot3_fake_node:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/turtlebot3_fake_node:/opt/ros/humble /usr/bin/cmake --install /home/moradlinux/labEkf_ws/build/turtlebot3_simulations
