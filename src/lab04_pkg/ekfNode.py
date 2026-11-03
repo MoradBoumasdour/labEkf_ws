@@ -33,9 +33,8 @@ class ekfNode(Node):
         super().__init__('ekfNode')
 
         #data
-        u = np.array()
-        self.ekf = self.constructor()
-         #, self.sigma_u, self.sigma_z, self.Q_landm, self.eval_Ht)
+        self.u = np.array([0.0, 0.0])
+        self.ekf, self.sigma_u, self.sigma_z, self.Q_landm, self.eval_Ht = self.constructor()
      
         #connections
 
@@ -49,7 +48,7 @@ class ekfNode(Node):
 
         #dataudated
 
-    def constructor():
+    def constructor(self):
 
         #sensor parameters
         mex_range = 8.0
@@ -59,7 +58,7 @@ class ekfNode(Node):
         dim_x = 3
 
         # general noise parameters TO BE DONE
-        std_lin_vel = 0.1
+        std_lin_vel = 0.08
         std_ang_vel = np.deg2rad(1.0)  # [rad/s]
         sigma_u = np.array([std_lin_vel, std_ang_vel])
 
@@ -79,28 +78,24 @@ class ekfNode(Node):
         _, eval_Ht = landmark_sm_simpy()
 
         ekf = RobotEKF(dim_x=dim_x, dim_u=dim_u, eval_gux=eval_gux, eval_Gt=eval_Gt, eval_Vt=eval_Vt)
-        ekf.mu = np.array([1, 6, 0.3])  # x, y, theta
-        ekf.Sigma = np.diag([0.1, 0.1, 0.1])
+        ekf.mu = np.array([1, 6, 0.3])  # x, y, theta #modifiare
+        ekf.Sigma = np.diag([0.1, 0.1, 0.1]) #modificare
         ekf.Mt = Mt
 
-        return ekf#, sigma_u, sigma_z, Q_landm, eval_Ht
+        return ekf, sigma_u, sigma_z, Q_landm, eval_Ht
         
     def timer_callback(self):
-       self.ekf.predict(self.u, self.sigma_u, g_extra_args=(self.timer_period))
+       self.ekf.predict(self.u, self.sigma_u, g_extra_args=(self.timer_period,))
        msg = Twist()
-       Twist.linear = self.ekf.mu[0]
-       Twist.angular = self.ekf.mu[1]
-       
+       msg.linear = self.ekf.mu[0]
+       msg.angular = self.ekf.mu[1]
+       self.publisher.publish(msg)
 
-
-
-        
 
     def Odomcallback(self, msg):
-        v = msg.Twist.Twist.linear
-        w = msg.Twist.Twist.angular
-        self.u = np.array(v,w)
-        self.sigma_u = msg.Twist.covariance
+        v = msg.twist.twist.linear
+        w = msg.twist.twist.angular
+        self.u = np.array([v,w])
 
 if __name__ == "__main__":
     rclpy.init()
