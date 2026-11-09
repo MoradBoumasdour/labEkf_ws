@@ -1,7 +1,0 @@
-{
-  "package_name": "landmark_msgs",
-  "non_idl_tuples": [
-    "/home/moradlinux/labEkf_ws/src/turtlebot3_perception/landmark_msgs:msg/Landmark.msg",
-    "/home/moradlinux/labEkf_ws/src/turtlebot3_perception/landmark_msgs:msg/LandmarkArray.msg"
-  ]
-}

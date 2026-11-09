@@ -1,1 +1,0 @@
-/home/moradlinux/labEkf_ws/src/turtlebot3_perception/turtlebot3_perception/launch/rs_launch_composable.launch.py

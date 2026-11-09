@@ -1,1 +1,0 @@
-/home/moradlinux/labEkf_ws/src/turtlebot3_perception/landmark_msgs/msg/LandmarkArray.msg

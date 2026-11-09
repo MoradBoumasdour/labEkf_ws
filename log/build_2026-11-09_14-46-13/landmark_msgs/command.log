@@ -1,4 +1,0 @@
-Invoking command in '/home/moradlinux/labEkf_ws/build/landmark_msgs': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/moradlinux/labEkf_ws/build/landmark_msgs -- -j8 -l8
-Invoked command in '/home/moradlinux/labEkf_ws/build/landmark_msgs' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/moradlinux/labEkf_ws/build/landmark_msgs -- -j8 -l8
-Invoking command in '/home/moradlinux/labEkf_ws/build/landmark_msgs': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/moradlinux/labEkf_ws/build/landmark_msgs
-Invoked command in '/home/moradlinux/labEkf_ws/build/landmark_msgs' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/moradlinux/labEkf_ws/build/landmark_msgs

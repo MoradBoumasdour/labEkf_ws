@@ -1,1 +1,0 @@
-/home/moradlinux/labEkf_ws/build/turtlebot3_perception/launch/camera.launch.py

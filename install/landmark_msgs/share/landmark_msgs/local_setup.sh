@@ -1,1 +1,0 @@
-/home/moradlinux/labEkf_ws/build/landmark_msgs/ament_cmake_environment_hooks/local_setup.sh
