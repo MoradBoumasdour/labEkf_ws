@@ -16,7 +16,7 @@ from probabilistic_models import (
     velocity_mm_simpy,
     landmark_sm_simpy
 )
-import utils
+
 from turtlebot3_perception.landmark_msgs.msg import LandmarkArray
 from utils import residual
 from ekf import RobotEKF
@@ -36,7 +36,7 @@ class ekfNode(Node):
         self.ekf, self.sigma_u, self.sigma_z, self.Q_landm, self.eval_Ht = self.constructor()
 
         self.declare_parameter('landmarks', list())
-        self.landmarks= self.get_parameter('landmarks').get_parameter_value().double_array_value
+        self.landmarks = self.get_parameter('landmarks').get_parameter_value().double_array_value
         self.declare_parameter('landmark_topic', 'landmarks')
         self.landmark_topic = self.get_parameter('landmark_topic').get_parameter_value().string_value
         #connections
@@ -117,3 +117,5 @@ if __name__ == "__main__":
     rclpy.spin(my_node)
     my_node.destroy_node()  # cleans up pub-subs, etc
     rclpy.shutdown()
+
+    
