@@ -1,0 +1,6 @@
+ekfNode:
+  ros__parameters:
+    landmark_topic: 'landmarks'
+    landmarksid: [11, 12, 13, 21, 22, 23, 31, 32, 33]
+    landmarksx: [-1.1, -1.1, -1.1, 0.0, 0.0, 0.0, 1.1, 1.1, 1.1]
+    landmarksy: [-1.1, 0.0, 1.1, -1.1, 0.0, 1.1, -1.1, 0.0, 1.1]
