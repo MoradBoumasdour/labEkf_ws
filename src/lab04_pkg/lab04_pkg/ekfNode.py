@@ -9,7 +9,7 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 from rclpy.qos import qos_profile_sensor_data
 from math import ceil
-from probabilistic_models import (
+from lab04_pkg.lab04_pkg.probabilistic_models import (
     sample_velocity_motion_model,
     landmark_range_bearing_model,
     landmark_range_bearing_sensor,
@@ -18,7 +18,7 @@ from probabilistic_models import (
 )
 
 from turtlebot3_perception.landmark_msgs.msg import LandmarkArray
-from utils import residual
+from lab04_pkg.lab04_pkg.utils import residual
 from ekf import RobotEKF
 
 seed = 42
