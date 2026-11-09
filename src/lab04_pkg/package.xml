@@ -3,10 +3,19 @@
 <package format="3">
   <name>lab04_pkg</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="leonardocarreras03@gmail.com">leonardo</maintainer>
+  <description>ekf localization</description>
+  <maintainer email="S360909@studenti.polito.it">Leonardo Carreras</maintainer>
+  <maintainer email="S364165@studenti.polito.it">Morad Boumasdour</maintainer>
   <license>Apache-2.0</license>
 
+  <depend>rclpy</depend>
+  <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>tf_transformations</depend>
+
+  <exec_depend>python3-numpy</exec_depend>
+  
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_pep257</test_depend>

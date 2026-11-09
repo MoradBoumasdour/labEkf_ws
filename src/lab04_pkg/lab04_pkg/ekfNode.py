@@ -37,7 +37,6 @@ class ekfNode(Node):
 
         self.declare_parameter('landmarksid', list())
         self.landmarksid= self.get_parameter('landmarksid').get_parameter_value().double_array_value
-
         self.declare_parameter('landmarksx', list())
         self.landmarksx = self.get_parameter('landmarksx').get_parameter_value().double_array_value
         self.declare_parameter('landmarksy', list())
