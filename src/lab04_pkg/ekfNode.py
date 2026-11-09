@@ -5,7 +5,6 @@ import numpy as np
 import math
 import tf_transformations
 from rclpy.node import Node
-from  sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 from rclpy.qos import qos_profile_sensor_data
@@ -18,8 +17,8 @@ from probabilistic_models import (
     landmark_sm_simpy
 )
 import utils
-
-
+from turtlebot3_perception.landmark_msgs.msg import LandmarkArray
+from utils import residual
 from ekf import RobotEKF
 
 seed = 42
@@ -35,10 +34,14 @@ class ekfNode(Node):
         #data
         self.u = np.array([0.0, 0.0])
         self.ekf, self.sigma_u, self.sigma_z, self.Q_landm, self.eval_Ht = self.constructor()
-     
+
+        self.declare_parameter('landmarks', list())
+        self.velMax = self.get_parameter('landmarks').get_parameter_value().double_array_value
+        self.declare_parameter('landmark_topic', 'landmarks')
+        self.landmark_topic = self.get_parameter('landmark_topic').get_parameter_value().string_value
         #connections
         self.subscription = self.create_subscription(Odometry, 'odom',self.Odomcallback,10)
-
+        self.subscription = self.create_subscription(LandmarkArray, self.landmark_topic, self.LandmarkCallback,10)
         #timer
         self.timer_period = 0.05
         self.timer = self.create_timer(self.timer_period, self.timer_callback)
@@ -94,6 +97,19 @@ class ekfNode(Node):
         v = msg.twist.twist.linear
         w = msg.twist.twist.angular
         self.u = np.array([v,w])
+
+    def LandmarkCallback(self, msg):
+        for landmark in msg.landmarks:
+            z = np.array([landmark.range, landmark.bearing])
+            if z is not None:
+                self.ekf.update(z,
+                                 eval_hx=landmark_range_bearing_model,
+                                 eval_Ht=self.eval_Ht, Qt=self.Q_landm,
+                                 Ht_args=(*self.ekf.mu, *landmark),
+                                 hx_args=(self.ekf.mu, landmark, self.sigma_z),
+                                 residual = residual)
+
+
 
 if __name__ == "__main__":
     rclpy.init()
