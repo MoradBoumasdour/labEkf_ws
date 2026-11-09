@@ -35,8 +35,18 @@ class ekfNode(Node):
         self.u = np.array([0.0, 0.0])
         self.ekf, self.sigma_u, self.sigma_z, self.Q_landm, self.eval_Ht = self.constructor()
 
-        self.declare_parameter('landmarks', list())
-        self.landmarks = self.get_parameter('landmarks').get_parameter_value().double_array_value
+        self.declare_parameter('landmarksid', list())
+        self.landmarksid= self.get_parameter('landmarksid').get_parameter_value().double_array_value
+
+        self.declare_parameter('landmarksx', list())
+        self.landmarksx = self.get_parameter('landmarksx').get_parameter_value().double_array_value
+        self.declare_parameter('landmarksy', list())
+        self.landmarksy = self.get_parameter('landmarksy').get_parameter_value().double_array_value
+
+        self.landmarks_dict = {
+        int(l_id): [x, y]
+        for l_id, x, y in zip(self.landmarksid, self.landmarksx, self.landmarksy)}
+
         self.declare_parameter('landmark_topic', 'landmarks')
         self.landmark_topic = self.get_parameter('landmark_topic').get_parameter_value().string_value
         #connections
@@ -102,13 +112,13 @@ class ekfNode(Node):
         for landmark in msg.landmarks:
             z = np.array([landmark.range, landmark.bearing])
             landmarkid = landmark.id
-            if z is not None:
-                self.ekf.update(z,
-                                 eval_hx=landmark_range_bearing_model,
-                                 eval_Ht=self.eval_Ht, Qt=self.Q_landm,
-                                 Ht_args=(*self.ekf.mu, *landmark),
-                                 hx_args=(self.ekf.mu, landmark, self.sigma_z),
-                                 residual = residual)
+        
+            self.ekf.update(z,
+                                eval_hx=landmark_range_bearing_model,
+                                eval_Ht=self.eval_Ht, Qt=self.Q_landm,
+                                Ht_args=(*self.ekf.mu, *self.landmarks_dict[landmarkid]),
+                                hx_args=(self.ekf.mu, self.landmarks_dict[landmarkid], self.sigma_z),
+                                residual = residual)
 
 
 if __name__ == "__main__":
