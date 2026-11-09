@@ -67,8 +67,8 @@ class ekfNode(Node):
         dim_x = 3
         
         # general noise parameters 
-        std_lin_vel = 0.08
-        std_ang_vel = np.deg2rad(1.0)  # [rad/s]
+        std_lin_vel = 0.01 #before 0.08
+        std_ang_vel = np.deg2rad(0.05)#1.0  # [rad/s]
    
 
         sigma_u = np.array([std_lin_vel, std_ang_vel])
@@ -80,8 +80,8 @@ class ekfNode(Node):
         
         
         # Define noise params and Q for landmark sensor model
-        std_range = 0.1  # [m]
-        std_bearing = np.deg2rad(1.0)  # [rad]
+        std_range = 0.01 #0.1  # [m]
+        std_bearing = np.deg2rad(0.05) #1.0  # [rad]
 
         sigma_z = np.array([std_range, std_bearing])
         Q_landm = np.diag([std_range**2, std_bearing**2])
@@ -94,7 +94,7 @@ class ekfNode(Node):
 
        
         ekf.mu = np.array([2, -0.5, 0])  # x, y, theta
-        ekf.Sigma = np.diag([0.1, 0.1, 0.05]) 
+        ekf.Sigma = np.diag([0.01, 0.01, 0.05]) #0.1 0.1 0.05
     
         ekf.Mt = Mt
 
