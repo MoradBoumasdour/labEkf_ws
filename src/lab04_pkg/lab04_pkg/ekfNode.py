@@ -48,9 +48,12 @@ class ekfNode(Node):
 
         self.declare_parameter('landmark_topic', 'landmarks')
         self.landmark_topic = self.get_parameter('landmark_topic').get_parameter_value().string_value
-        #connections
-        self.subscription = self.create_subscription(Odometry, 'odom',self.Odomcallback,10)
-        self.subscription = self.create_subscription(LandmarkArray, self.landmark_topic, self.LandmarkCallback,10)
+        
+        # connections
+        self.odom_subscription = self.create_subscription(Odometry, 'odom', self.Odomcallback, 10)
+        self.landmark_subscription = self.create_subscription(LandmarkArray, self.landmark_topic, self.LandmarkCallback, 10)
+        self.publisher = self.create_publisher(Odometry, 'ekf', 10)
+
         #timer
         self.timer_period = 0.05
         self.timer = self.create_timer(self.timer_period, self.timer_callback)
@@ -111,13 +114,30 @@ class ekfNode(Node):
         for landmark in msg.landmarks:
             z = np.array([landmark.range, landmark.bearing])
             landmarkid = landmark.id
-        
             self.ekf.update(z,
                                 eval_hx=landmark_range_bearing_model,
                                 eval_Ht=self.eval_Ht, Qt=self.Q_landm,
                                 Ht_args=(*self.ekf.mu, *self.landmarks_dict[landmarkid]),
                                 hx_args=(self.ekf.mu, self.landmarks_dict[landmarkid], self.sigma_z),
                                 residual = residual)
+
+    def ekfOdometry(self):
+
+        odom_msg = Odometry()
+
+        odom_msg.header.stamp = self.get_clock().now().to_msg()  # Timestamp corrente
+
+        odom_msg.pose.pose.position.x = float(self.ekf.mu[0])
+        odom_msg.pose.pose.position.y = float(self.ekf.mu[1])
+        odom_msg.pose.pose.position.z = 0.0  # Essendo un EKF 2D, z è zero
+
+        q = tf_transformations.quaternion_from_euler(0.0, 0.0, float(self.ekf.mu[2]))
+        odom_msg.pose.pose.orientation.x = q[0]
+        odom_msg.pose.pose.orientation.y = q[1]
+        odom_msg.pose.pose.orientation.z = q[2]
+        odom_msg.pose.pose.orientation.w = q[3]
+
+        self.publisher.publish(odom_msg)
 
 
 if __name__ == "__main__":
