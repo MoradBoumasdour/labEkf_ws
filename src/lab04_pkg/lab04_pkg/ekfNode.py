@@ -9,7 +9,7 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 from rclpy.qos import qos_profile_sensor_data
 from math import ceil
-from lab04_pkg.lab04_pkg.probabilistic_models import (
+from lab04_pkg.probabilistic_models import (
     sample_velocity_motion_model,
     landmark_range_bearing_model,
     landmark_range_bearing_sensor,
@@ -17,9 +17,9 @@ from lab04_pkg.lab04_pkg.probabilistic_models import (
     landmark_sm_simpy
 )
 
-from turtlebot3_perception.landmark_msgs.msg import LandmarkArray
-from lab04_pkg.lab04_pkg.utils import residual
-from ekf import RobotEKF
+from landmark_msgs.msg import LandmarkArray
+from lab04_pkg.utils import residual
+from lab04_pkg.ekf import RobotEKF
 
 seed = 42
 np.random.seed(seed)
@@ -35,11 +35,13 @@ class ekfNode(Node):
         self.u = np.array([0.0, 0.0])
         self.ekf, self.sigma_u, self.sigma_z, self.Q_landm, self.eval_Ht = self.constructor()
 
-        self.declare_parameter('landmarksid', list())
-        self.landmarksid= self.get_parameter('landmarksid').get_parameter_value().double_array_value
-        self.declare_parameter('landmarksx', list())
+        self.declare_parameter('landmarksid', [0])
+        self.landmarksid = self.get_parameter('landmarksid').get_parameter_value().integer_array_value
+
+        self.declare_parameter('landmarksx', [0.0])
         self.landmarksx = self.get_parameter('landmarksx').get_parameter_value().double_array_value
-        self.declare_parameter('landmarksy', list())
+
+        self.declare_parameter('landmarksy', [0.0])
         self.landmarksy = self.get_parameter('landmarksy').get_parameter_value().double_array_value
 
         self.landmarks_dict = {
@@ -64,11 +66,10 @@ class ekfNode(Node):
         #probabiistic model paramters
         dim_x = 3
         
-        ######TO BE DONE######
         # general noise parameters 
         std_lin_vel = 0.08
         std_ang_vel = np.deg2rad(1.0)  # [rad/s]
-        ##########################
+   
 
         sigma_u = np.array([std_lin_vel, std_ang_vel])
         Mt = np.diag([std_lin_vel**2, std_ang_vel**2])
@@ -78,11 +79,9 @@ class ekfNode(Node):
         _, eval_Gt, eval_Vt = velocity_mm_simpy()
         
         
-        ######TO BE DONE######
         # Define noise params and Q for landmark sensor model
         std_range = 0.1  # [m]
         std_bearing = np.deg2rad(1.0)  # [rad]
-        #########################
 
         sigma_z = np.array([std_range, std_bearing])
         Q_landm = np.diag([std_range**2, std_bearing**2])
@@ -93,21 +92,22 @@ class ekfNode(Node):
 
         ekf = RobotEKF(dim_x=dim_x, dim_u=dim_u, eval_gux=eval_gux, eval_Gt=eval_Gt, eval_Vt=eval_Vt)
 
-        ########TO BE DONE########
-        ekf.mu = np.array([1, 6, 0.3])  # x, y, theta #modifiare
-        ekf.Sigma = np.diag([0.1, 0.1, 0.1]) #modificare
-        ##########################
+       
+        ekf.mu = np.array([2, -0.5, 0])  # x, y, theta
+        ekf.Sigma = np.diag([0.1, 0.1, 0.05]) 
+    
         ekf.Mt = Mt
 
         return ekf, sigma_u, sigma_z, Q_landm, eval_Ht
         
     def timer_callback(self):
        self.ekf.predict(self.u, self.sigma_u, g_extra_args=(self.timer_period,))
+       self.ekfOdometry()
 
 
     def Odomcallback(self, msg):
-        v = msg.twist.twist.linear
-        w = msg.twist.twist.angular
+        v = msg.twist.twist.linear.x
+        w = msg.twist.twist.angular.z
         self.u = np.array([v,w])
 
     def LandmarkCallback(self, msg):
@@ -120,6 +120,7 @@ class ekfNode(Node):
                                 Ht_args=(*self.ekf.mu, *self.landmarks_dict[landmarkid]),
                                 hx_args=(self.ekf.mu, self.landmarks_dict[landmarkid], self.sigma_z),
                                 residual = residual)
+        self.ekfOdometry()
 
     def ekfOdometry(self):
 
@@ -140,11 +141,14 @@ class ekfNode(Node):
         self.publisher.publish(odom_msg)
 
 
-if __name__ == "__main__":
-    rclpy.init()
-    my_node = ekfNode()
-    rclpy.spin(my_node)
-    my_node.destroy_node()  # cleans up pub-subs, etc
+def main(args = None):
+    rclpy.init(args=args)
+    node = ekfNode()
+    rclpy.spin(node)
+    node.destroy_node()
     rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
 
     

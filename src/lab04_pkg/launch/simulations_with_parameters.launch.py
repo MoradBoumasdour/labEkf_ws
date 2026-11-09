@@ -25,9 +25,6 @@ def generate_launch_description():
             PathJoinSubstitution([
                 FindPackageShare('lab04_pkg'), 'config', 'params_simulation.yaml'
             ]),
-            PathJoinSubstitution([
-                FindPackageShare('turtlebot3_perception'), 'config', 'landmarks.yaml'
-            ]),
         ],
     )
 
