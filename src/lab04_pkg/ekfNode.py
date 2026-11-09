@@ -36,7 +36,7 @@ class ekfNode(Node):
         self.ekf, self.sigma_u, self.sigma_z, self.Q_landm, self.eval_Ht = self.constructor()
 
         self.declare_parameter('landmarks', list())
-        self.velMax = self.get_parameter('landmarks').get_parameter_value().double_array_value
+        self.landmarks= self.get_parameter('landmarks').get_parameter_value().double_array_value
         self.declare_parameter('landmark_topic', 'landmarks')
         self.landmark_topic = self.get_parameter('landmark_topic').get_parameter_value().string_value
         #connections
@@ -101,6 +101,7 @@ class ekfNode(Node):
     def LandmarkCallback(self, msg):
         for landmark in msg.landmarks:
             z = np.array([landmark.range, landmark.bearing])
+            landmarkid = landmark.id
             if z is not None:
                 self.ekf.update(z,
                                  eval_hx=landmark_range_bearing_model,
@@ -108,7 +109,6 @@ class ekfNode(Node):
                                  Ht_args=(*self.ekf.mu, *landmark),
                                  hx_args=(self.ekf.mu, landmark, self.sigma_z),
                                  residual = residual)
-
 
 
 if __name__ == "__main__":
