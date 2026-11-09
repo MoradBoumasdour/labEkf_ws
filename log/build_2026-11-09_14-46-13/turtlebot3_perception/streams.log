@@ -1,0 +1,19 @@
+[0.631s] Invoking command in '/home/moradlinux/labEkf_ws/build/turtlebot3_perception': AMENT_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/landmark_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/landmark_msgs LD_LIBRARY_PATH=/home/moradlinux/labEkf_ws/install/landmark_msgs/lib:/opt/ros/humble/opt/zenoh_cpp_vendor/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/share/gazebo/../../lib/x86_64-linux-gnu/gazebo-11/plugins PYTHONPATH=/home/moradlinux/labEkf_ws/build/turtlebot3_perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/moradlinux/labEkf_ws/install/turtlebot3_perception/lib/python3.10/site-packages:/home/moradlinux/labEkf_ws/install/landmark_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/moradlinux/labEkf_ws/build/turtlebot3_perception/build --no-deps symlink_data
+[0.754s] running develop
+[0.826s] running egg_info
+[0.827s] writing turtlebot3_perception.egg-info/PKG-INFO
+[0.827s] writing dependency_links to turtlebot3_perception.egg-info/dependency_links.txt
+[0.827s] writing entry points to turtlebot3_perception.egg-info/entry_points.txt
+[0.827s] writing requirements to turtlebot3_perception.egg-info/requires.txt
+[0.827s] writing top-level names to turtlebot3_perception.egg-info/top_level.txt
+[0.828s] reading manifest file 'turtlebot3_perception.egg-info/SOURCES.txt'
+[0.829s] writing manifest file 'turtlebot3_perception.egg-info/SOURCES.txt'
+[0.830s] running build_ext
+[0.830s] Creating /home/moradlinux/labEkf_ws/install/turtlebot3_perception/lib/python3.10/site-packages/turtlebot3-perception.egg-link (link to .)
+[0.831s] Installing detection2landmark script to /home/moradlinux/labEkf_ws/install/turtlebot3_perception/lib/turtlebot3_perception
+[0.831s] Installing landmark_simulator script to /home/moradlinux/labEkf_ws/install/turtlebot3_perception/lib/turtlebot3_perception
+[0.831s] Installing laserscan2lines script to /home/moradlinux/labEkf_ws/install/turtlebot3_perception/lib/turtlebot3_perception
+[0.832s] 
+[0.832s] Installed /home/moradlinux/labEkf_ws/build/turtlebot3_perception
+[0.832s] running symlink_data
+[0.848s] Invoked command in '/home/moradlinux/labEkf_ws/build/turtlebot3_perception' returned '0': AMENT_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/landmark_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/moradlinux/labEkf_ws/install/landmark_msgs LD_LIBRARY_PATH=/home/moradlinux/labEkf_ws/install/landmark_msgs/lib:/opt/ros/humble/opt/zenoh_cpp_vendor/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib:/usr/share/gazebo/../../lib/x86_64-linux-gnu/gazebo-11/plugins PYTHONPATH=/home/moradlinux/labEkf_ws/build/turtlebot3_perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/moradlinux/labEkf_ws/install/turtlebot3_perception/lib/python3.10/site-packages:/home/moradlinux/labEkf_ws/install/landmark_msgs/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/moradlinux/labEkf_ws/build/turtlebot3_perception/build --no-deps symlink_data

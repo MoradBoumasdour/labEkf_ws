@@ -1,0 +1,17 @@
+running develop
+running egg_info
+writing turtlebot3_perception.egg-info/PKG-INFO
+writing dependency_links to turtlebot3_perception.egg-info/dependency_links.txt
+writing entry points to turtlebot3_perception.egg-info/entry_points.txt
+writing requirements to turtlebot3_perception.egg-info/requires.txt
+writing top-level names to turtlebot3_perception.egg-info/top_level.txt
+reading manifest file 'turtlebot3_perception.egg-info/SOURCES.txt'
+writing manifest file 'turtlebot3_perception.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/moradlinux/labEkf_ws/install/turtlebot3_perception/lib/python3.10/site-packages/turtlebot3-perception.egg-link (link to .)
+Installing detection2landmark script to /home/moradlinux/labEkf_ws/install/turtlebot3_perception/lib/turtlebot3_perception
+Installing landmark_simulator script to /home/moradlinux/labEkf_ws/install/turtlebot3_perception/lib/turtlebot3_perception
+Installing laserscan2lines script to /home/moradlinux/labEkf_ws/install/turtlebot3_perception/lib/turtlebot3_perception
+
+Installed /home/moradlinux/labEkf_ws/build/turtlebot3_perception
+running symlink_data
