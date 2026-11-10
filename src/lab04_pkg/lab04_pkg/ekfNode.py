@@ -2,17 +2,13 @@ import rclpy
 from rclpy.node import Node
 
 import numpy as np
-import math
 import tf_transformations
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Twist
 from rclpy.qos import qos_profile_sensor_data
-from math import ceil
 from lab04_pkg.probabilistic_models import (
     sample_velocity_motion_model,
     landmark_range_bearing_model,
-    landmark_range_bearing_sensor,
     velocity_mm_simpy,
     landmark_sm_simpy
 )
@@ -67,8 +63,8 @@ class ekfNode(Node):
         dim_x = 3
         
         # general noise parameters 
-        std_lin_vel = 0.01 #before 0.08
-        std_ang_vel = np.deg2rad(0.05)#1.0  # [rad/s]
+        std_lin_vel = 0.08 #before 0.08
+        std_ang_vel = np.deg2rad(1.0)#1.0  # [rad/s]
    
 
         sigma_u = np.array([std_lin_vel, std_ang_vel])
@@ -93,7 +89,7 @@ class ekfNode(Node):
         ekf = RobotEKF(dim_x=dim_x, dim_u=dim_u, eval_gux=eval_gux, eval_Gt=eval_Gt, eval_Vt=eval_Vt)
 
        
-        ekf.mu = np.array([2, -0.5, 0])  # x, y, theta
+        ekf.mu = np.array([2.0, -0.5, 0.0])  # x, y, theta
         ekf.Sigma = np.diag([0.01, 0.01, 0.05]) #0.1 0.1 0.05
     
         ekf.Mt = Mt
@@ -114,7 +110,9 @@ class ekfNode(Node):
         for landmark in msg.landmarks:
             z = np.array([landmark.range, landmark.bearing])
             landmarkid = landmark.id
-            self.ekf.update(z,
+            if landmarkid in self.landmarks_dict:
+                self.ekf.update(
+                                z,
                                 eval_hx=landmark_range_bearing_model,
                                 eval_Ht=self.eval_Ht, Qt=self.Q_landm,
                                 Ht_args=(*self.ekf.mu, *self.landmarks_dict[landmarkid]),

@@ -2,26 +2,20 @@ import rclpy
 from rclpy.node import Node
 
 import numpy as np
-import math
 import tf_transformations
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Twist
 from rclpy.qos import qos_profile_sensor_data
-from math import ceil
-from lab04_pkg.probabilistic_models import (
+from lab04_pkg_task2.probabilistic_models import (
     landmark_sm_simpy_5d,
-    sample_velocity_motion_model,
     landmark_range_bearing_model,
-    landmark_range_bearing_sensor,
-    velocity_mm_simpy,
-    landmark_sm_simpy,
-    velocity_mm_simpy_5d
+    velocity_mm_simpy_5d,
+    sample_velocity_motion_model_5d
 )
-
+from sensor_msgs.msg import Imu
 from landmark_msgs.msg import LandmarkArray
-from lab04_pkg.utils import residual
-from lab04_pkg.ekf import RobotEKF
+from lab04_pkg_task2.utils import residual
+from lab04_pkg_task2.ekf import RobotEKF
 
 seed = 42
 np.random.seed(seed)
@@ -78,7 +72,7 @@ class ekfNode(Node):
         # Velocity motion model params
         dim_u = 2
 
-        eval_gux = velocity_motion_model_5d
+        eval_gux = sample_velocity_motion_model_5d
         eval_Gt, eval_Vt = velocity_mm_simpy_5d()
         
         
@@ -91,7 +85,7 @@ class ekfNode(Node):
 
 
         # Define H Jacobian function
-        eval_hx_landm, eval_Ht_landm = landmark_sm_simpy_5d()
+        _, eval_Ht = landmark_sm_simpy_5d()
 
 
         self.H_odom = np.array([[0.0, 0.0, 0.0, 1.0, 0.0],
@@ -155,8 +149,8 @@ class ekfNode(Node):
             if landmarkid in self.landmarks_dict:
                 self.ekf.update(
                     z,
-                    eval_hx=self.eval_hx_landm,
-                    eval_Ht=self.eval_Ht_landm,
+                    eval_hx=landmark_range_bearing_model,
+                    eval_Ht=self.eval_Ht,
                     Qt=self.Q_landm,
                     Ht_args=(*self.ekf.mu, *self.landmarks_dict[landmarkid]),
                     hx_args=(self.ekf.mu, self.landmarks_dict[landmarkid], self.sigma_z),
