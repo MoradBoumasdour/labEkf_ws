@@ -10,7 +10,11 @@ from lab04_pkg_task2.probabilistic_models import (
     landmark_sm_simpy_5d,
     landmark_range_bearing_model,
     velocity_mm_simpy_5d,
-    sample_velocity_motion_model_5d
+    sample_velocity_motion_model_5d,
+    imu_sm_simpy_5d,
+    odom_sm_simpy_5d,
+    imu_model,
+    encoder_model
 )
 from sensor_msgs.msg import Imu
 from landmark_msgs.msg import LandmarkArray
@@ -29,7 +33,17 @@ class ekfNode(Node):
 
         #data
         self.u = np.array([0.0, 0.0])
-        self.ekf, self.sigma_u, self.sigma_z, self.Q_landm, self.eval_Ht = self.constructor()
+        self.ekf,
+        self.sigma_u,
+        self.sigma_z,
+        self.sigma_odom,
+        self.sigma_imu,
+        self.eval_Ht_landm,
+        self.eval_Ht_imu,
+        self.eval_Ht_odom,
+        self.Q_landm,
+        self.Q_odom,
+        self.Q_imu= self.constructor()
 
         self.declare_parameter('landmarksid', [0])
         self.landmarksid = self.get_parameter('landmarksid').get_parameter_value().integer_array_value
@@ -62,49 +76,43 @@ class ekfNode(Node):
 
         #probabiistic model paramters
         dim_x = 5
-        
-        # general noise parameters 
-        std_lin_vel = 0.08 #before 0.08
-        std_ang_vel = np.deg2rad(1.0)#1.0  # [rad/s]
-
-        sigma_u = np.array([std_lin_vel, std_ang_vel])
-        Mt = np.diag([std_lin_vel**2, std_ang_vel**2])
         # Velocity motion model params
         dim_u = 2
 
+        
+        # motion model
+        std_lin_vel = 0.08 #before 0.08
+        std_ang_vel = np.deg2rad(1.0)#1.0  # [rad/s]
+        sigma_u = np.array([std_lin_vel, std_ang_vel])
+        Mt = np.diag([std_lin_vel**2, std_ang_vel**2])
         eval_gux = sample_velocity_motion_model_5d
         eval_Gt, eval_Vt = velocity_mm_simpy_5d()
         
-        
-        # Define noise params and Q for landmark sensor model
+        # landmark model
         std_range = 0.1 #0.1  # [m]
         std_bearing = np.deg2rad(1.0) #1.0  # [rad]
-
         sigma_z = np.array([std_range, std_bearing])
         Q_landm = np.diag([std_range**2, std_bearing**2])
+        _, eval_Ht_landm = landmark_sm_simpy_5d()
 
+        #odom model
+        sigma_odom = sigma_u
+        Q_odom = Mt
+        eval_Ht_odom = odom_sm_simpy_5d()
 
-        # Define H Jacobian function
-        _, eval_Ht = landmark_sm_simpy_5d()
-
-
-        self.H_odom = np.array([[0.0, 0.0, 0.0, 1.0, 0.0],
-                                [0.0, 0.0, 0.0, 0.0, 1.0]])
-        self.Q_odom = np.diag([0.05**2, np.deg2rad(2.0)**2]) 
-        self.eval_h_odom = lambda x, *args: np.array([x[3], x[4]])
-
-        self.H_imu = np.array([[0.0, 0.0, 0.0, 0.0, 1.0]])
-        self.Q_imu = np.array([[np.deg2rad(1.0)**2]])        
-        self.eval_h_imu = lambda x, *args: np.array([x[4]])
-
-
+        #imu model
+        std_w_imu = 1.0
+        sigma_imu  = np.array([std_w_imu])
+        Q_imu = np.array([[np.deg2rad(std_w_imu)**2]])        
+        eval_Ht_imu = imu_sm_simpy_5d()
+        
 
         ekf = RobotEKF(dim_x=dim_x, dim_u=dim_u, eval_gux=eval_gux, eval_Gt=eval_Gt, eval_Vt=eval_Vt)
         ekf.mu = np.array([2.0, -0.5, 0.0, 0.0, 0.0])  # x, y, theta
         ekf.Sigma = np.diag([0.1, 0.1, 0.05, 0.1, 0.1]) #0.1 0.1 0.05
         ekf.Mt = Mt
 
-        return ekf, sigma_u, sigma_z, Q_landm, eval_Ht
+        return ekf, sigma_u, sigma_z, sigma_odom, sigma_imu, eval_Ht_landm, eval_Ht_imu, eval_Ht_odom, Q_landm, Q_odom, Q_imu
         
     def timer_callback(self):
        self.ekf.predict(self.u, self.sigma_u, g_extra_args=(self.timer_period,))
@@ -120,10 +128,11 @@ class ekfNode(Node):
         z_odom = np.array([v, w])
         self.ekf.update(
             z_odom,
-            eval_hx=self.eval_h_odom,
-            eval_Ht=lambda *args: self.H_odom,
+            eval_hx=encoder_model,
+            eval_Ht=self.eval_Ht_odom,
             Qt=self.Q_odom,
-            Ht_args=(), hx_args=(), residual=residual
+            Ht_args=(*self.ekf.mu,), hx_args=(self.u, self.sigma_odom),
+            residual=residual
         )
         self.ekfOdometry()
 
@@ -135,10 +144,11 @@ class ekfNode(Node):
         z_imu = np.array([w_imu])
         self.ekf.update(
             z_imu,
-            eval_hx=self.eval_h_imu,
-            eval_Ht=lambda *args: self.H_imu,
+            eval_hx=imu_model,
+            eval_Ht=self.eval_Ht_imu,
             Qt=self.Q_imu,
-            Ht_args=(), hx_args=(), residual=residual
+            Ht_args=(*self.ekf.mu,), hx_args=(self.u, self.sigma_imu),
+            residual=residual
         )
         self.ekfOdometry()
 
@@ -150,7 +160,7 @@ class ekfNode(Node):
                 self.ekf.update(
                     z,
                     eval_hx=landmark_range_bearing_model,
-                    eval_Ht=self.eval_Ht,
+                    eval_Ht=self.eval_Ht_landm,
                     Qt=self.Q_landm,
                     Ht_args=(*self.ekf.mu, *self.landmarks_dict[landmarkid]),
                     hx_args=(self.ekf.mu, self.landmarks_dict[landmarkid], self.sigma_z),

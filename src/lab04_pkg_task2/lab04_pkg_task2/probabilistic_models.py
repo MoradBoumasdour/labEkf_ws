@@ -48,6 +48,25 @@ def landmark_range_bearing_model(robot_pose, landmark, sigma):
     phi_ = math.atan2(m_y - y, m_x - x) - theta + np.random.normal(0.0, sigma[1])
     return np.array([r_, phi_])
 
+def encoder_model(u, sigma):
+    """""
+    Sampling z from encoder model
+    """ ""
+    v = u[0]
+    w = u[1]
+
+    v_ =v + np.random.normal(0.0, sigma[0])
+    w_ = w + np.random.normal(0.0, sigma[1])
+    return np.array([v_, w_])
+
+def imu_model(u, sigma):
+    """""
+    Sampling z from imu model
+    """ ""
+    w = u[1]
+
+    w_ = w + np.random.normal(0.0, sigma)
+    return np.array([w_])
 
 # decorator
 def squeeze_sympy_out(func):
@@ -60,7 +79,6 @@ def squeeze_sympy_out(func):
 
 
 def velocity_mm_simpy_5d():
-   
     x, y, theta, v, w, dt = symbols("x y theta v w dt")
     R = v / w
     beta = theta + w * dt
@@ -92,4 +110,34 @@ def landmark_sm_simpy_5d():
     eval_hx = squeeze_sympy_out(sympy.lambdify((x, y, theta, v, w, mx, my), hx, "numpy"))
     Ht = hx.jacobian(Matrix([x, y, theta, v, w]))
     eval_Ht = squeeze_sympy_out(sympy.lambdify((x, y, theta, v, w, mx, my), Ht, "numpy"))
+    return eval_hx, eval_Ht
+
+
+def odom_sm_simpy_5d():
+    """Genera h(x) e il Jacobiano H (2x5) per l'odometria (misura v, w)"""
+    x, y, theta, v, w = symbols("x y theta v w")
+    
+    hx = Matrix([
+        [v],
+        [w]
+    ])
+    eval_hx = squeeze_sympy_out(sympy.lambdify((x, y, theta, v, w), hx, "numpy"))
+    
+    Ht = hx.jacobian(Matrix([x, y, theta, v, w])) # Genera in automatico la matrice con gli 1 e 0
+    eval_Ht = squeeze_sympy_out(sympy.lambdify((x, y, theta, v, w), Ht, "numpy"))
+    
+    return eval_hx, eval_Ht
+
+def imu_sm_simpy_5d():
+    """Genera h(x) e il Jacobiano H (1x5) per l'IMU (misura solo w)"""
+    x, y, theta, v, w = symbols("x y theta v w")
+    
+    hx = Matrix([
+        [w]
+    ])
+    eval_hx = squeeze_sympy_out(sympy.lambdify((x, y, theta, v, w), hx, "numpy"))
+    
+    Ht = hx.jacobian(Matrix([x, y, theta, v, w]))
+    eval_Ht = squeeze_sympy_out(sympy.lambdify((x, y, theta, v, w), Ht, "numpy"))
+    
     return eval_hx, eval_Ht
