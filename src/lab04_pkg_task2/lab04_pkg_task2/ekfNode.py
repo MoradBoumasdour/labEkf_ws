@@ -108,7 +108,7 @@ class ekfNode(Node):
         
 
         ekf = RobotEKF(dim_x=dim_x, dim_u=dim_u, eval_gux=eval_gux, eval_Gt=eval_Gt, eval_Vt=eval_Vt)
-        ekf.mu = np.array([2.0, -0.5, 0.0, 0.0, 0.0])  # x, y, theta
+        ekf.mu = np.array([0.0, 0.0, 0.0, 0.0, 0.0])  # x, y, theta
         ekf.Sigma = np.diag([0.1, 0.1, 0.05, 0.1, 0.1]) #0.1 0.1 0.05
         ekf.Mt = Mt
 

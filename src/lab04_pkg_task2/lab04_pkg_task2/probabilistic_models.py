@@ -6,7 +6,7 @@ from sympy import symbols, Matrix
 from sensor_msgs.msg import Imu
 
 
-def sample_velocity_motion_model_5d(x, a, dt):
+def sample_velocity_motion_model_5d(x,u, a, dt):
     """Sample velocity motion model.
     Arguments:
     x -- pose of the robot before moving [x, y, theta]
@@ -14,7 +14,7 @@ def sample_velocity_motion_model_5d(x, a, dt):
     sigma -- noise parameters of the motion model [a1, a2, a3, a4, a5, a6] or [std_dev_v, std_dev_w]
     dt -- time interval of prediction
     """
-    u = x[3:5]
+    
     sigma = np.ones((3))
     if a.shape == u.shape:
         sigma[:-1] = a[:]
