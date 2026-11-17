@@ -33,7 +33,7 @@ class ekfNode(Node):
 
         #data
         self.u = np.array([0.0, 0.0])
-        self.ekf,
+        (self.ekf,
         self.sigma_u,
         self.sigma_z,
         self.sigma_odom,
@@ -43,7 +43,7 @@ class ekfNode(Node):
         self.eval_Ht_odom,
         self.Q_landm,
         self.Q_odom,
-        self.Q_imu= self.constructor()
+        self.Q_imu)= self.constructor()
 
         self.declare_parameter('landmarksid', [0])
         self.landmarksid = self.get_parameter('landmarksid').get_parameter_value().integer_array_value
@@ -173,6 +173,8 @@ class ekfNode(Node):
 
         odom_msg = Odometry()
         odom_msg.header.stamp = self.get_clock().now().to_msg()  # Timestamp corrente
+        odom_msg.header.frame_id = 'odom'
+        odom_msg.child_frame_id = 'base_link'
 
         odom_msg.pose.pose.position.x = float(self.ekf.mu[0])
         odom_msg.pose.pose.position.y = float(self.ekf.mu[1])
