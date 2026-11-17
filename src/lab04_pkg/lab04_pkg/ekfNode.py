@@ -28,7 +28,7 @@ class ekfNode(Node):
         super().__init__('ekfNode')
 
         #data
-        self.u = np.array([0.0, 0.0])
+        self.u = np.array([0.0, 1e-6])
         (self.ekf, self.sigma_u, self.sigma_z, self.Q_landm, self.eval_Ht) = self.constructor()
 
         self.declare_parameter('landmarksid', [0])
@@ -104,6 +104,9 @@ class ekfNode(Node):
     def Odomcallback(self, msg):
         v = msg.twist.twist.linear.x
         w = msg.twist.twist.angular.z
+
+        if abs(w) < 1e-6:
+            w = 1e-6  # Set a small non-zero value for w to avoid division by zero
         self.u = np.array([v,w])
 
     def LandmarkCallback(self, msg):

@@ -32,7 +32,7 @@ class ekfNode(Node):
         super().__init__('ekfNode')
 
         #data
-        self.u = np.array([0.0, 0.0])
+        self.u = np.array([0.0, 1e-6])
         (self.ekf,
         self.sigma_u,
         self.sigma_z,
@@ -86,7 +86,7 @@ class ekfNode(Node):
         sigma_u = np.array([std_lin_vel, std_ang_vel])
         Mt = np.diag([std_lin_vel**2, std_ang_vel**2])
         eval_gux = sample_velocity_motion_model_5d
-        eval_Gt, eval_Vt = velocity_mm_simpy_5d()
+        _, eval_Gt, eval_Vt = velocity_mm_simpy_5d()
         
         # landmark model
         std_range = 0.1 #0.1  # [m]
@@ -98,13 +98,13 @@ class ekfNode(Node):
         #odom model
         sigma_odom = sigma_u
         Q_odom = Mt
-        eval_Ht_odom = odom_sm_simpy_5d()
+        _, eval_Ht_odom = odom_sm_simpy_5d()
 
         #imu model
-        std_w_imu = 1.0
+        std_w_imu = np.deg2rad(1.0)
         sigma_imu  = np.array([std_w_imu])
-        Q_imu = np.array([[np.deg2rad(std_w_imu)**2]])        
-        eval_Ht_imu = imu_sm_simpy_5d()
+        Q_imu = np.array([[std_w_imu**2]])        
+        _, eval_Ht_imu = imu_sm_simpy_5d()
         
 
         ekf = RobotEKF(dim_x=dim_x, dim_u=dim_u, eval_gux=eval_gux, eval_Gt=eval_Gt, eval_Vt=eval_Vt)
@@ -115,13 +115,15 @@ class ekfNode(Node):
         return ekf, sigma_u, sigma_z, sigma_odom, sigma_imu, eval_Ht_landm, eval_Ht_imu, eval_Ht_odom, Q_landm, Q_odom, Q_imu
         
     def timer_callback(self):
-       self.ekf.predict(self.u, self.sigma_u, g_extra_args=(self.timer_period,))
+       self.ekf.predict(np.empty(0), self.sigma_u, g_extra_args=(self.timer_period,))
        self.ekfOdometry()
 
 
     def Odomcallback(self, msg):
         v = msg.twist.twist.linear.x
         w = msg.twist.twist.angular.z
+        if abs(w) < 1e-6:
+            w = 1e-6  # Set a small non-zero value for w to avoid division by zero
         self.u = np.array([v,w])
 
         # Update encoder
@@ -131,7 +133,7 @@ class ekfNode(Node):
             eval_hx=encoder_model,
             eval_Ht=self.eval_Ht_odom,
             Qt=self.Q_odom,
-            Ht_args=(*self.ekf.mu,), hx_args=(self.u, self.sigma_odom),
+            Ht_args=(*self.ekf.mu,), hx_args=(self.ekf.mu, self.sigma_odom),
             residual=residual
         )
         self.ekfOdometry()
@@ -147,7 +149,7 @@ class ekfNode(Node):
             eval_hx=imu_model,
             eval_Ht=self.eval_Ht_imu,
             Qt=self.Q_imu,
-            Ht_args=(*self.ekf.mu,), hx_args=(self.u, self.sigma_imu),
+            Ht_args=(*self.ekf.mu,), hx_args=(self.ekf.mu, self.sigma_imu),
             residual=residual
         )
         self.ekfOdometry()

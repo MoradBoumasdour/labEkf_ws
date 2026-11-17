@@ -6,7 +6,7 @@ from sympy import symbols, Matrix
 from sensor_msgs.msg import Imu
 
 
-def sample_velocity_motion_model_5d(x, u, a, dt):
+def sample_velocity_motion_model_5d(x, a, dt):
     """Sample velocity motion model.
     Arguments:
     x -- pose of the robot before moving [x, y, theta]
@@ -14,7 +14,7 @@ def sample_velocity_motion_model_5d(x, u, a, dt):
     sigma -- noise parameters of the motion model [a1, a2, a3, a4, a5, a6] or [std_dev_v, std_dev_w]
     dt -- time interval of prediction
     """
-
+    u = x[3:5]
     sigma = np.ones((3))
     if a.shape == u.shape:
         sigma[:-1] = a[:]
@@ -42,28 +42,28 @@ def landmark_range_bearing_model(robot_pose, landmark, sigma):
     Sampling z from landmark model for range and bearing
     """ ""
     m_x, m_y = landmark[:]
-    x, y, theta = robot_pose[:]
+    x, y, theta = robot_pose[:3]
 
     r_ = math.dist([x, y], [m_x, m_y]) + np.random.normal(0.0, sigma[0])
     phi_ = math.atan2(m_y - y, m_x - x) - theta + np.random.normal(0.0, sigma[1])
     return np.array([r_, phi_])
 
-def encoder_model(u, sigma):
+def encoder_model(mu, sigma):
     """""
     Sampling z from encoder model
     """ ""
-    v = u[0]
-    w = u[1]
+    v = mu[3]
+    w = mu[4]
 
-    v_ =v + np.random.normal(0.0, sigma[0])
+    v_ = v + np.random.normal(0.0, sigma[0])
     w_ = w + np.random.normal(0.0, sigma[1])
     return np.array([v_, w_])
 
-def imu_model(u, sigma):
+def imu_model(mu, sigma):
     """""
     Sampling z from imu model
     """ ""
-    w = u[1]
+    w = mu[4]
 
     w_ = w + np.random.normal(0.0, sigma)
     return np.array([w_])
@@ -136,8 +136,7 @@ def imu_sm_simpy_5d():
         [w]
     ])
     eval_hx = squeeze_sympy_out(sympy.lambdify((x, y, theta, v, w), hx, "numpy"))
-    
     Ht = hx.jacobian(Matrix([x, y, theta, v, w]))
-    eval_Ht = squeeze_sympy_out(sympy.lambdify((x, y, theta, v, w), Ht, "numpy"))
-    
+    f = sympy.lambdify((x, y, theta, v, w), Ht, "numpy")
+    eval_Ht = lambda *args: np.atleast_2d(f(*args))      # niente squeeze: forma (1,5)
     return eval_hx, eval_Ht

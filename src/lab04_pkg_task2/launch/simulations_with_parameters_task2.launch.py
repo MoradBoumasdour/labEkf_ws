@@ -18,12 +18,12 @@ def generate_launch_description():
     )
 
     EKF_node = Node(
-        package='lab04_pkg',
+        package='lab04_pkg_task2',
         executable='ekfNode',
         name='ekfNode',
         parameters=[
             PathJoinSubstitution([
-                FindPackageShare('lab04_pkg'), 'config', 'params_simulation.yaml'
+                FindPackageShare('lab04_pkg_task2'), 'config', 'params_simulation.yaml'
             ]),
         ],
     )
