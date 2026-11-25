@@ -6,11 +6,10 @@ from sympy import symbols, Matrix
 from sensor_msgs.msg import Imu
 
 
-def sample_velocity_motion_model_5d(x,u, a, dt):
+def sample_velocity_motion_model_5d(x, u, a, dt):
     """Sample velocity motion model.
     Arguments:
-    x -- pose of the robot before moving [x, y, theta]
-    u -- velocity reading obtained from the robot [v, w]
+    x -- pose of the robot before moving [x, y, theta, v, w]
     sigma -- noise parameters of the motion model [a1, a2, a3, a4, a5, a6] or [std_dev_v, std_dev_w]
     dt -- time interval of prediction
     """
@@ -20,13 +19,13 @@ def sample_velocity_motion_model_5d(x,u, a, dt):
         sigma[:-1] = a[:]
         sigma[-1] = a[1] * 0.5
     else:
-        sigma[0] = a[0] * u[0] ** 2 + a[1] * u[1] ** 2
-        sigma[1] = a[2] * u[0] ** 2 + a[3] * u[1] ** 2
-        sigma[2] = a[4] * u[0] ** 2 + a[5] * u[1] ** 2
+        sigma[0] = a[0] * x[3] ** 2 + a[1] * x[4] ** 2
+        sigma[1] = a[2] * x[3] ** 2 + a[3] * x[4] ** 2
+        sigma[2] = a[4] * x[3] ** 2 + a[5] * x[4] ** 2
 
     # sample noisy velocity commands to consider actuaction errors and unmodeled dynamics
-    v_hat = u[0] + np.random.normal(0, sigma[0])
-    w_hat = u[1] + np.random.normal(0, sigma[1])
+    v_hat = x[3] + np.random.normal(0, sigma[0])
+    w_hat = x[4] + np.random.normal(0, sigma[1])
     gamma_hat = np.random.normal(0, sigma[2])
 
     # compute the new pose of the robot according to the velocity motion model
@@ -35,7 +34,7 @@ def sample_velocity_motion_model_5d(x,u, a, dt):
     y_prime = x[1] + r * cos(x[2]) - r * cos(x[2] + w_hat * dt)
     theta_prime = x[2] + w_hat * dt + gamma_hat * dt
 
-    return np.array([x_prime, y_prime, theta_prime, u[0], u[1]])
+    return np.array([x_prime, y_prime, theta_prime, v_hat, w_hat])
 
 def landmark_range_bearing_model(robot_pose, landmark, sigma):
     """""

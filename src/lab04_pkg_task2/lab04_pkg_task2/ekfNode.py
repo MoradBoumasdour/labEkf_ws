@@ -102,7 +102,7 @@ class ekfNode(Node):
 
         #imu model
         std_w_imu = np.deg2rad(1.0)
-        sigma_imu  = np.array([std_w_imu])
+        sigma_imu = std_w_imu
         Q_imu = np.array([[std_w_imu**2]])        
         _, eval_Ht_imu = imu_sm_simpy_5d()
         
@@ -115,7 +115,7 @@ class ekfNode(Node):
         return ekf, sigma_u, sigma_z, sigma_odom, sigma_imu, eval_Ht_landm, eval_Ht_imu, eval_Ht_odom, Q_landm, Q_odom, Q_imu
         
     def timer_callback(self):
-       self.ekf.predict(np.empty(0), self.sigma_u, g_extra_args=(self.timer_period,))
+       self.ekf.predict(self.u, self.sigma_u, g_extra_args=(self.timer_period,))
        self.ekfOdometry()
 
 

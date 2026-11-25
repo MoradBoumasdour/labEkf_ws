@@ -45,7 +45,7 @@ class RobotEKF:
         # Update the state prediction evaluating the motion model
         self.mu = self.eval_gux(self.mu, u, sigma_u, *g_extra_args)
 
-        args = (*self.mu, *u)
+        args = (*self.mu,)
         # Update the covariance matrix of the state prediction,
         # you need to evaluate the Jacobians Gt and Vt
 
