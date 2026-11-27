@@ -63,8 +63,8 @@ class ekfNode(Node):
         dim_u = 2
 
         #noise parameters for velocity motion model
-        std_lin_vel = 0.08 #before 0.08
-        std_ang_vel = np.deg2rad(1.0)#1.0  # [rad/s]
+        std_lin_vel = 0.01 #before 0.08
+        std_ang_vel = np.deg2rad(0.05)#1.0  # [rad/s]
         sigma_u = np.array([std_lin_vel, std_ang_vel])
         Mt = np.diag([std_lin_vel**2, std_ang_vel**2])
 
@@ -84,7 +84,7 @@ class ekfNode(Node):
 
         ekf = RobotEKF(dim_x=dim_x, dim_u=dim_u, eval_gux=eval_gux, eval_Gt=eval_Gt, eval_Vt=eval_Vt)
 
-        ekf.mu = np.array([2.0, -0.5, 0.0])  # x, y, theta
+        ekf.mu = np.array([0.0, 0.0, 0.0])  # x, y, theta
         ekf.Sigma = np.diag([0.01, 0.01, 0.05]) #0.1 0.1 0.05
     
         ekf.Mt = Mt
@@ -92,7 +92,7 @@ class ekfNode(Node):
         return ekf, sigma_u, sigma_z, Q_landm, eval_Ht
         
     def timer_callback(self):
-       self.ekf.predict(self.u, self.sigma_u, g_extra_args=(self.timer_period,))
+        self.ekf.predict(self.u, self.sigma_u, g_extra_args=(self.timer_period,))
 
     def Odomcallback(self, msg):
         v = msg.twist.twist.linear.x

@@ -14,7 +14,8 @@ def generate_launch_description():
                 'launch',
                 'lab04.launch.py'
             ])
-        )
+        ),
+        launch_arguments={'use_sim_time': 'true'}.items(),
     )
 
     EKF_node = Node(
@@ -25,6 +26,7 @@ def generate_launch_description():
             PathJoinSubstitution([
                 FindPackageShare('lab04_pkg'), 'config', 'params_simulation.yaml'
             ]),
+            {'use_sim_time': True},
         ],
     )
 

@@ -81,8 +81,8 @@ class ekfNode(Node):
 
         
         # motion model
-        std_lin_vel = 0.08 #before 0.08
-        std_ang_vel = np.deg2rad(1.0)#1.0  # [rad/s]
+        std_lin_vel = 0.01 #before 0.08
+        std_ang_vel = np.deg2rad(0.5)#1.0  # [rad/s]
         sigma_u = np.array([std_lin_vel, std_ang_vel])
         Mt = np.diag([std_lin_vel**2, std_ang_vel**2])
         eval_gux = sample_velocity_motion_model_5d
@@ -101,7 +101,7 @@ class ekfNode(Node):
         _, eval_Ht_odom = odom_sm_simpy_5d()
 
         #imu model
-        std_w_imu = np.deg2rad(1.0)
+        std_w_imu = np.deg2rad(2.0)
         sigma_imu = std_w_imu
         Q_imu = np.array([[std_w_imu**2]])        
         _, eval_Ht_imu = imu_sm_simpy_5d()
@@ -115,6 +115,8 @@ class ekfNode(Node):
         return ekf, sigma_u, sigma_z, sigma_odom, sigma_imu, eval_Ht_landm, eval_Ht_imu, eval_Ht_odom, Q_landm, Q_odom, Q_imu
         
     def timer_callback(self):
+       if abs(self.ekf.mu[4]) < 1e-4:  #zero division protection
+            self.ekf.mu[4] = 1e-4 if self.ekf.mu[4] >= 0 else -1e-4
        self.ekf.predict(self.u, self.sigma_u, g_extra_args=(self.timer_period,))
        self.ekfOdometry()
 
