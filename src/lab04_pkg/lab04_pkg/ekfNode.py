@@ -63,8 +63,8 @@ class ekfNode(Node):
         dim_u = 2
 
         #noise parameters for velocity motion model
-        std_lin_vel = 0.01 #before 0.08
-        std_ang_vel = np.deg2rad(0.05)#1.0  # [rad/s]
+        std_lin_vel = 0.08 #before 0.08
+        std_ang_vel = np.deg2rad(1.0)#1.0  # [rad/s]
         sigma_u = np.array([std_lin_vel, std_ang_vel])
         Mt = np.diag([std_lin_vel**2, std_ang_vel**2])
 
@@ -74,8 +74,8 @@ class ekfNode(Node):
         
         
         # Define noise params and Q for landmark sensor model
-        std_range = 0.01 #0.1  # [m]
-        std_bearing = np.deg2rad(0.05) #1.0  # [rad]
+        std_range = 0.1 #0.1  # [m]
+        std_bearing = np.deg2rad(1.0) #1.0  # [rad]
         sigma_z = np.array([std_range, std_bearing])
         Q_landm = np.diag([std_range**2, std_bearing**2])
 
@@ -84,7 +84,7 @@ class ekfNode(Node):
 
         ekf = RobotEKF(dim_x=dim_x, dim_u=dim_u, eval_gux=eval_gux, eval_Gt=eval_Gt, eval_Vt=eval_Vt)
 
-        ekf.mu = np.array([0.0, 0.0, 0.0])  # x, y, theta
+        ekf.mu = np.array([2.0, 0.5, 0.0])  # x, y, theta
         ekf.Sigma = np.diag([0.01, 0.01, 0.05]) #0.1 0.1 0.05
     
         ekf.Mt = Mt

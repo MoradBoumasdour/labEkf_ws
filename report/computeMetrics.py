@@ -6,13 +6,13 @@ from rclpy.time import Time
 from rosbag2_reader_py import Rosbag2Reader
 
 BAGS = {
-    "task1": ("Task 1", os.path.expanduser("~/labEkf_ws/real_task1")),
-    "task2": ("Task 2", os.path.expanduser("~/labEkf_ws/real_task2")),
+    "task1": ("Task 1", os.path.expanduser("~/labEkf_ws/sim_task1")),
+    "task2": ("Task 2", os.path.expanduser("~/labEkf_ws/sim_task2")),
 }
 OUT_DIR = os.path.expanduser("~/labEkf_ws/report")
 
 # True for real robot (map + real landmarks); False for simulation (grid + sim landmarks)
-IS_REAL = True
+IS_REAL = False
 PGM_PATH = os.path.expanduser("~/labEkf_ws/map.pgm")
 YAML_PATH = os.path.expanduser("~/labEkf_ws/map.yaml")
 

@@ -81,8 +81,8 @@ class ekfNode(Node):
 
         
         # motion model
-        std_lin_vel = 0.01 #before 0.08
-        std_ang_vel = np.deg2rad(0.5)#1.0  # [rad/s]
+        std_lin_vel = 0.08 #before 0.08
+        std_ang_vel = np.deg2rad(1.0)#1.0  # [rad/s]
         sigma_u = np.array([std_lin_vel, std_ang_vel])
         Mt = np.diag([std_lin_vel**2, std_ang_vel**2])
         eval_gux = sample_velocity_motion_model_5d
@@ -108,7 +108,7 @@ class ekfNode(Node):
         
 
         ekf = RobotEKF(dim_x=dim_x, dim_u=dim_u, eval_gux=eval_gux, eval_Gt=eval_Gt, eval_Vt=eval_Vt)
-        ekf.mu = np.array([0.0, 0.0, 0.0, 0.0, 0.0])  # x, y, theta
+        ekf.mu = np.array([2.0, 0.5, 0.0, 0.0, 0.0])  # x, y, theta
         ekf.Sigma = np.diag([0.1, 0.1, 0.05, 0.1, 0.1]) #0.1 0.1 0.05
         ekf.Mt = Mt
 
