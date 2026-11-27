@@ -1,6 +1,4 @@
 import rclpy
-from rclpy.node import Node
-
 import numpy as np
 import tf_transformations
 from rclpy.node import Node
@@ -108,7 +106,7 @@ class ekfNode(Node):
         
 
         ekf = RobotEKF(dim_x=dim_x, dim_u=dim_u, eval_gux=eval_gux, eval_Gt=eval_Gt, eval_Vt=eval_Vt)
-        ekf.mu = np.array([2.0, 0.5, 0.0, 0.0, 0.0])  # x, y, theta
+        ekf.mu = np.array([2.0, 0.5, 0.0, 0.0, 0.0])  # x, y, theta, v, w
         ekf.Sigma = np.diag([0.1, 0.1, 0.05, 0.1, 0.1]) #0.1 0.1 0.05
         ekf.Mt = Mt
 
@@ -118,7 +116,6 @@ class ekfNode(Node):
        if abs(self.ekf.mu[4]) < 1e-4:  #zero division protection
             self.ekf.mu[4] = 1e-4 if self.ekf.mu[4] >= 0 else -1e-4
        self.ekf.predict(self.u, self.sigma_u, g_extra_args=(self.timer_period,))
-       self.ekfOdometry()
 
 
     def Odomcallback(self, msg):
